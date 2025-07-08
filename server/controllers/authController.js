@@ -1,12 +1,10 @@
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 
-// @desc    Register new user
-// @route   POST /api/auth/register
-// @access  Public
+//Register new user
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password, address } = req.body;
+    const { name, email, password, address, role } = req.body;
 
     // Basic validation
     if (!name || !email || !password) {
@@ -25,6 +23,7 @@ export const registerUser = async (req, res) => {
       email,
       password,
       address,
+      role: role || "user", 
     });
 
     // Save user (hashed by pre-save hook)
@@ -54,8 +53,6 @@ export const registerUser = async (req, res) => {
 
 
 ////Login User API 
-
-//@API  POST /api/auth/login
 
 export const loginUser = async(req,res)=> {
     try {
