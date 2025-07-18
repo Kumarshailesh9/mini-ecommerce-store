@@ -18,20 +18,36 @@ export const getProductById = async (req, res) => {
 
 // Create product (admin)
 export const createProduct = async (req, res) => {
-  const product = new Product({
-    name: "Sample Product",
-    price: 0,
-    user: req.user._id,
-    image: "/images/sample.jpg",
-    brand: "Sample Brand",
-    category: "Sample Category",
-    countInStock: 0,
-    numReviews: 0,
-    description: "Sample description",
-  });
+   try {
+    const {
+      name,
+      price,
+      image,
+      brand,
+      category,
+      description,
+      countInStock,
+      numReviews
+    } = req.body;
 
-  const createdProduct = await product.save();
-  res.status(201).json(createdProduct);
+    const product = new Product({
+      name,
+      price,
+      image,
+      brand,
+      category,
+      description,
+      countInStock,
+      numReviews,
+      user: req.user._id,
+    });
+
+    const createdProduct = await product.save();
+    res.status(201).json(createdProduct);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to create product" });
+  }
 };
 
 // Update product (admin)
@@ -61,7 +77,7 @@ export const deleteProduct = async (req, res) => {
   const product = await Product.findById(req.params.id);
 
   if (product) {
-    await product.remove();
+    await product.deleteOne();
     res.json({ message: "Product removed" });
   } else {
     res.status(404).json({ message: "Product not found" });
